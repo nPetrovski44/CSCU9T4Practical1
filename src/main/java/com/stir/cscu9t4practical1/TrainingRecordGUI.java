@@ -9,6 +9,8 @@ import java.lang.Number;
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
 
+	private JFrame frame;
+	
     private JTextField name = new JTextField(30);
     private JTextField day = new JTextField(2);
     private JTextField month = new JTextField(2);
@@ -17,6 +19,12 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JTextField mins = new JTextField(2);
     private JTextField secs = new JTextField(2);
     private JTextField dist = new JTextField(4);
+    private JTextField terrain = new JTextField(10);
+    private JTextField tempo = new JTextField(4);
+    private JTextField rep = new JTextField(4);
+    private JTextField rec = new JTextField(4);
+    private JTextField place = new JTextField(10);
+    
     private JLabel labn = new JLabel(" Name:");
     private JLabel labd = new JLabel(" Day:");
     private JLabel labm = new JLabel(" Month:");
@@ -25,14 +33,24 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JLabel labmm = new JLabel(" Mins:");
     private JLabel labs = new JLabel(" Secs:");
     private JLabel labdist = new JLabel(" Distance (km):");
+    private JLabel labdrop = new JLabel(" Select entry:");
+    private JLabel labterrain = new JLabel(" Terrain:");
+    private JLabel labtempo = new JLabel(" Tempo:");
+    private JLabel labrep = new JLabel(" Repetition:");
+    private JLabel labrec = new JLabel(" Repetition:");
+    private JLabel labplace = new JLabel(" Place:");
+    
     private JButton addR = new JButton("Add");
     private JButton lookUpByDate = new JButton("Look Up Last");
     private JButton FindAllByDate = new JButton("Look Up All");
-
+    private JButton submitEntry = new JButton("Submit");
+    
     private TrainingRecord myAthletes = new TrainingRecord();
 
     private JTextArea outputArea = new JTextArea(5, 50);
-
+    private String[] entryOptions = {"NormalRun", "Sprint", "Swim", "Cycle"};
+    private JComboBox<String> dropDown = new JComboBox<String>(entryOptions);
+    
     public static void main(String[] args) {
         TrainingRecordGUI applic = new TrainingRecordGUI();
     } // main
@@ -40,10 +58,15 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     // set up the GUI 
     public TrainingRecordGUI() {
         super("Training Record");
+        frame = new JFrame("TrainingRecords");
         setLayout(new FlowLayout());
         add(labn);
         add(name);
         name.setEditable(true);
+        add(labdrop);
+        add(dropDown);
+        add(submitEntry);
+        submitEntry.addActionListener(this);
         add(labd);
         add(day);
         day.setEditable(true);
@@ -65,6 +88,37 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         add(labdist);
         add(dist);
         dist.setEditable(true);
+        
+        add(labterrain);
+        add(terrain);
+        labterrain.setVisible(false);
+        terrain.setVisible(false);
+        terrain.setEditable(true);
+        
+        add(labtempo);
+        add(tempo);
+        labtempo.setVisible(false);
+        tempo.setVisible(false);
+        tempo.setEditable(true);
+        
+        add(labrep);
+        add(rep);
+        labrep.setVisible(false);
+        rep.setVisible(false);
+        rep.setEditable(true);
+        
+        add(labrec);
+        add(rec);
+        labrec.setVisible(false);
+        rec.setVisible(false);
+        rec.setEditable(true);
+
+        add(labplace);
+        add(place);
+        labplace.setVisible(false);
+        place.setVisible(false);
+    	place.setEditable(true);
+        
         add(addR);
         addR.addActionListener(this);
         add(lookUpByDate);
@@ -94,6 +148,80 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         if (event.getSource() == FindAllByDate)
         {
         	message = lookupAll();
+        }
+        if(event.getSource() == submitEntry)
+        {
+            if(dropDown.getSelectedItem().toString().equals("Sprint"))
+            {
+            	 labrep.setVisible(true);
+                 rep.setVisible(true);
+                 
+                 labrec.setVisible(true);
+                 rec.setVisible(true);
+                 
+                 labplace.setVisible(false);
+                 place.setVisible(false);
+                 
+                 labterrain.setVisible(false);
+                 terrain.setVisible(false);
+                 
+                 labtempo.setVisible(false);
+                 tempo.setVisible(false);
+                 
+                 
+                 SwingUtilities.updateComponentTreeUI(rep);
+                 SwingUtilities.updateComponentTreeUI(rec);
+                 SwingUtilities.updateComponentTreeUI(place);
+                 SwingUtilities.updateComponentTreeUI(terrain);
+                 SwingUtilities.updateComponentTreeUI(tempo);
+            }
+            if(dropDown.getSelectedItem().toString().equals("Swim"))
+            {
+	           	 labrep.setVisible(true);
+	             rep.setVisible(true);
+	             
+	             labrec.setVisible(true);
+	             rec.setVisible(true);
+	             
+	             labplace.setVisible(true);
+	             place.setVisible(true);
+	             
+	             labterrain.setVisible(false);
+	             terrain.setVisible(false);
+	             
+	             labtempo.setVisible(false);
+	             tempo.setVisible(false);
+	             
+                SwingUtilities.updateComponentTreeUI(rep);
+                SwingUtilities.updateComponentTreeUI(rec);
+                SwingUtilities.updateComponentTreeUI(place);
+                SwingUtilities.updateComponentTreeUI(terrain);
+                SwingUtilities.updateComponentTreeUI(tempo);
+            }
+            if(dropDown.getSelectedItem().toString().equals("Cycle"))
+            {	
+	           	 labrep.setVisible(false);
+	             rep.setVisible(false);
+	             
+	             labrec.setVisible(false);
+	             rec.setVisible(false);
+	             
+	             labplace.setVisible(false);
+	             place.setVisible(false);
+	             
+	             labterrain.setVisible(true);
+	             terrain.setVisible(true);
+	             
+	             labtempo.setVisible(true);
+	             tempo.setVisible(true);
+	             	
+                SwingUtilities.updateComponentTreeUI(rep);
+                SwingUtilities.updateComponentTreeUI(rec);
+                SwingUtilities.updateComponentTreeUI(place);
+                SwingUtilities.updateComponentTreeUI(terrain);
+                SwingUtilities.updateComponentTreeUI(tempo);
+            }
+
         }
         outputArea.setText(message);
         blankDisplay();
