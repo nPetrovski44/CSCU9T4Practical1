@@ -23,10 +23,17 @@ public class TrainingRecord {
    public String lookupEntry (int d, int m, int y) {
        ListIterator<Entry> iter = tr.listIterator();
        String result = "No entries found";
+       boolean firstResult = true;
        while (iter.hasNext()) {
           Entry current = iter.next();
           if (current.getDay()==d && current.getMonth()==m && current.getYear()==y) 
-             result = current.getEntry();
+          		{
+        	  		if(firstResult == true) {
+        	  		result = current.getEntry();
+        	  		firstResult = false;
+        	  		}
+        	  		else result = result + current.getEntry();
+          		}
             }
        return result;
    } // lookupEntry
