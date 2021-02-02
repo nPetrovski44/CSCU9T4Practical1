@@ -48,6 +48,17 @@ public class TrainingRecord {
             }
        return result;
    }
+   public boolean lookupExact(String name, int d, int m, int y, int h, int min, int s, float dist)
+   {
+	   ListIterator<Entry> iter = tr.listIterator();
+	   while(iter.hasNext())
+	   {
+		   Entry current = iter.next();
+		   if(current.getName().equals(name) && current.getDay() == d && current.getMonth() == m && current.getYear() == y && current.getHour() == h && current.getMin() == min && current.getSec() == s && current.getDistance() == dist)
+			   return true;
+	   }
+	   return false;
+   }
    // Count the number of entries
    public int getNumberOfEntries(){
        return tr.size();

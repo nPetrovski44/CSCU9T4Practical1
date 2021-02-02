@@ -103,16 +103,38 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         String message = "Record added\n";
         System.out.println("Adding "+what+" entry to the records");
         String n = name.getText();
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        float km = java.lang.Float.parseFloat(dist.getText());
-        int h = Integer.parseInt(hours.getText());
-        int mm = Integer.parseInt(mins.getText());
-        int s = Integer.parseInt(secs.getText());
-        Entry e = new Entry(n, d, m, y, h, mm, s, km);
-        myAthletes.addEntry(e);
-        return message;
+        if(n.equals(""))return "Enter a valid name";
+        try
+        {
+	        int m = Integer.parseInt(month.getText());
+	        if(m < 1 || m > 12) return "Enter a valid month";
+	        int d = Integer.parseInt(day.getText());
+	        int y = Integer.parseInt(year.getText());
+	        if(d > 0)
+	        {
+	        	if((m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) && d > 31) return "Enter a valid day";
+	        	if((m == 4 || m == 6 || m == 9 || m == 11) && d > 30 ) return "Enter a valid day";
+	        	if(m == 2 && y % 4 != 0 && d > 28) return "Enter a valid day";
+	        	if(m == 2 && y % 4 == 0 && d > 29) return "Enter a valid day";
+	        }else return "Enter a valid day";
+	        float km = java.lang.Float.parseFloat(dist.getText());
+	        if(km < 0)return "Enter valid distance";
+	        int h = Integer.parseInt(hours.getText());
+	        if(h < 0) return "Enter a valid hour";
+	        int mm = Integer.parseInt(mins.getText());
+	        if(mm < 0 || mm > 60) return "Enter valid minutes";
+	        int s = Integer.parseInt(secs.getText());
+	        if(s < 0 || s > 60) return "Enter valid seconds";
+	        if(myAthletes.lookupExact(n, d, m, y, h, mm, s, km) == false)
+	        {
+		        Entry e = new Entry(n, d, m, y, h, mm, s, km);
+		        myAthletes.addEntry(e);
+	        }else return "This session has already been entered";
+	        return message;
+        }catch(Exception e)
+        {
+        	return "Invalid input";
+        }
     }
     
     public String lookupEntry() {
