@@ -22,11 +22,11 @@ public class TrainingRecordTest {
     }
     
     @BeforeAll
-    public void setUpClass() {
+    public static void setUpClass() {
     }
     
     @AfterAll
-    public void tearDownClass() {
+    public static void tearDownClass() {
     }
     
     @BeforeEach
@@ -63,7 +63,7 @@ public class TrainingRecordTest {
         TrainingRecord instance = new TrainingRecord();
         instance.addEntry(a);
         instance.addEntry(b);
-        assertEquals(instance.getNumberOfEntries(),1);
+        assertEquals(instance.getNumberOfEntries(), 1);
         // You might also consider using assertThrows() and let
         // TrainingRecord instance take care of when you're trying to add
         // a none-unique entry
@@ -132,15 +132,56 @@ public class TrainingRecordTest {
         Entry b = new Entry("Bob", 1, 2, 2003, 0, 14, 15, 3);
         instance.addEntry(a);
         instance.addEntry(b);
-        fail("This method cannot be tested as it does not exist yet");
+//        fail("This method cannot be tested as it does not exist yet");
         int d = 1;
         int m = 2;
         int y = 2003;
         // un-comment the lines below when you've implemented the method
-//        String resultSuccess = instance.lookupEntries(d,m,y);
-//        String resultNone = instance.lookupEntries(d,m,1999);
-//        assertEquals(expectResultsNone,resultNone);
-//        assertEquals(expectResults,resultSuccess);
+        String resultSuccess = instance.lookupAll(d,m,y);
+        String resultNone = instance.lookupAll(d,m,1999);
+        assertEquals(expectResultsNone,resultNone);
+        assertEquals(expectResults,resultSuccess);
     }
+    @Test
+    public void testLookupName()
+    {
+    	System.out.println("lookupName");
+    	String expectResultNone = "No people with that name found";
+    	String expectResult =   "Alice ran 3.0 km in 0:16:7 on 1/2/2003\n" + 
+                				"Alice sprinted 4x300m in 0:16:7 with 2 minutes recovery on 2/2/2003\n" + 
+                				"Alice swam 3.0 km outdoors in 0:16:7 on 3/2/2003\n"+ 
+                				"Alice cycled 3.0 km in 0:16:7 on 4/2/2003 on asphalt at moderate tempo\n";
+    	
+    	TrainingRecord instance = new TrainingRecord();
+    	Entry a  = new Entry("Alice", 1, 2, 2003, 0, 16, 7 ,3);
+    	Entry b = new SprintEntry("Alice", 2, 2, 2003, 0, 16, 7, 300, 4, 2);
+    	Entry c = new SwimEntry("Alice", 3, 2, 2003, 0, 16, 7, 3,"outdoors");
+    	Entry d = new CycleEntry("Alice", 4, 2, 2003, 0, 16, 7, 3, "asphalt", "moderate");
+    	instance.addEntry(a);
+    	instance.addEntry(b);
+    	instance.addEntry(c);
+    	instance.addEntry(d);
+    	assertEquals(4, instance.getNumberOfEntries());
+    	assertNotEquals(expectResultNone, "George");
+    	assertEquals(expectResult, instance.lookUpName("Alice"));
+    	}
     
+    @Test
+    public void testRemoveEntry()
+    {
+    	System.out.println("removeEntry");
+    	String expectResult = "Entry was succesfully removed";
+    	String expectResultNone = "There isn't such an Entry in the record";
+    	
+    	TrainingRecord instance = new TrainingRecord();
+    	Entry a = new Entry("Alice", 1, 2, 2003, 0, 16, 7 ,3);
+    	CycleEntry b = new CycleEntry("Alice", 2, 2, 2003, 0, 16, 7, 3, "asphalt", "moderate");
+    	instance.addEntry(a);
+    	instance.addEntry(b);
+    	
+    	assertEquals(expectResultNone, instance.removeEntry("Goerge", 2, 3, 2032));
+    	assertEquals(expectResult, instance.removeEntry("Alice", 2, 2, 2003));
+    	instance.removeEntry("Alice", 1, 2, 2003);
+    	assertEquals(expectResultNone, instance.removeEntry("Alice", 1, 2, 2003));
+    }
 }

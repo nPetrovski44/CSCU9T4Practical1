@@ -17,7 +17,7 @@ public class TrainingRecord {
     
     // add a record to the list
    public void addEntry(Entry e){
-       tr.add(e); 
+	   if(lookupExact(e.getName(), e.getDay(), e.getMonth(), e.getYear()) == null)tr.add(e); 
    }
    
    // look up the entry of a given day and month
@@ -34,7 +34,7 @@ public class TrainingRecord {
    
    public String lookupAll (int d, int m, int y) {
        ListIterator<Entry> iter = tr.listIterator();
-       String result = "No entries found";
+       String result = "Sorry couldn't find anything for this date";
        boolean firstResult = true;
        while (iter.hasNext()) {
           Entry current = iter.next();
