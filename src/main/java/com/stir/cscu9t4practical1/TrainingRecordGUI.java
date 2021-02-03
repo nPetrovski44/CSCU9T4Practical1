@@ -8,8 +8,6 @@ import javax.swing.*;
 import java.lang.Number;
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
-
-	private JFrame frame;
 	
     private JTextField name = new JTextField(30);
     private JTextField day = new JTextField(2);
@@ -32,18 +30,19 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JLabel labh = new JLabel(" Hours:");
     private JLabel labmm = new JLabel(" Mins:");
     private JLabel labs = new JLabel(" Secs:");
-    private JLabel labdist = new JLabel(" Distance (km):");
+    private JLabel labdist = new JLabel(" Distance:");
     private JLabel labdrop = new JLabel(" Select entry:");
     private JLabel labterrain = new JLabel(" Terrain:");
     private JLabel labtempo = new JLabel(" Tempo:");
     private JLabel labrep = new JLabel(" Repetition:");
-    private JLabel labrec = new JLabel(" Repetition:");
+    private JLabel labrec = new JLabel(" Recovery:");
     private JLabel labplace = new JLabel(" Place:");
     
     private JButton addR = new JButton("Add");
     private JButton lookUpByDate = new JButton("Look Up Last");
-    private JButton FindAllByDate = new JButton("Look Up All");
-    private JButton submitEntry = new JButton("Submit");
+    private JButton FindAllByDate = new JButton("Look Up All (Date)");
+    private JButton	FindAllByName = new JButton("Look Up All (Name)");
+    private JButton submitEntry = new JButton("Refresh");
     
     private TrainingRecord myAthletes = new TrainingRecord();
 
@@ -58,7 +57,6 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     // set up the GUI 
     public TrainingRecordGUI() {
         super("Training Record");
-        frame = new JFrame("TrainingRecords");
         setLayout(new FlowLayout());
         add(labn);
         add(name);
@@ -125,6 +123,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         lookUpByDate.addActionListener(this);
         add(FindAllByDate);
         FindAllByDate.addActionListener(this);
+        add(FindAllByName);
+        FindAllByName.addActionListener(this);
         add(outputArea);
         outputArea.setEditable(false);
         setSize(720, 200);
@@ -148,6 +148,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         if (event.getSource() == FindAllByDate)
         {
         	message = lookupAll();
+        }
+        if (event.getSource() == FindAllByName)
+        {
+        	message = lookUpName();
         }
         if(event.getSource() == submitEntry)
         {
@@ -253,10 +257,42 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 	        if(mm < 0 || mm > 60) return "Enter valid minutes";
 	        int s = Integer.parseInt(secs.getText());
 	        if(s < 0 || s > 60) return "Enter valid seconds";
-	        if(myAthletes.lookupExact(n, d, m, y, h, mm, s, km) == false)
-	        {
-		        Entry e = new Entry(n, d, m, y, h, mm, s, km);
-		        myAthletes.addEntry(e);
+	        if(myAthletes.lookupExact(n, d, m, y) == false)
+	        {	
+	        	if(dropDown.getSelectedItem().toString().equals("NormalRun"))
+	        	{
+	        		Entry e = new Entry(n, d, m, y, h, mm, s, km);
+	        		myAthletes.addEntry(e);
+	        	}
+	        	
+	        	if(dropDown.getSelectedItem().toString().equals("Sprint"))
+	        	{	
+	        		int repetition = Integer.parseInt(rep.getText());
+	        		if(repetition < 0) return "Enter a valid repetition";
+	        		int recovery = Integer.parseInt(rec.getText());
+	        		if(recovery < 0) return "Enter a valid recovery";
+	        		SprintEntry e = new SprintEntry(n, d, m, y, h, mm, s, km, repetition, recovery);
+	        		myAthletes.addEntry(e);
+	        	}
+	        	
+	        	if(dropDown.getSelectedItem().toString().equals("Swim"))
+	        	{
+	        		String swimmingPlace = place.getText();
+	        		if(swimmingPlace.equals("")) return "Enter a valid swimming place";
+	        		SwimEntry e = new SwimEntry(n, d, m, y, h, mm, s, km, swimmingPlace);
+	        		myAthletes.addEntry(e);
+	        	}
+	        	
+	        	if(dropDown.getSelectedItem().toString().equals("Cycle"))
+	        	{	
+	        		String ter = terrain.getText();
+	        		if(ter.equals("")) return "Enter a valid terrain";
+	        		String tem = tempo.getText();
+	        		if(tem.equals("")) return "Enter a valid tempo";
+	        		CycleEntry e = new CycleEntry(n, d, m, y, h, mm, s, km, ter, tem);
+	        		myAthletes.addEntry(e);
+	        	}
+
 	        }else return "This session has already been entered";
 	        return message;
         }catch(Exception e)
@@ -283,6 +319,15 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
      	String message = myAthletes.lookupAll(d, m, y);
         return message;
     }
+    
+    public String lookUpName()
+    {
+        String n = name.getText();
+        outputArea.setText("looking up records ...");
+     	String message = myAthletes.lookUpName(n);
+        return message;
+    }
+
 
     public void blankDisplay() {
         name.setText("");
@@ -293,6 +338,11 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         mins.setText("");
         secs.setText("");
         dist.setText("");
+        rep.setText("");
+        rec.setText("");
+        terrain.setText("");
+        tempo.setText("");
+        place.setText("");
 
     }// blankDisplay
     // Fills the input fields on the display for testing purposes only
