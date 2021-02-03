@@ -43,7 +43,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JButton FindAllByDate = new JButton("Look Up All (Date)");
     private JButton	FindAllByName = new JButton("Look Up All (Name)");
     private JButton submitEntry = new JButton("Refresh");
-    
+    private JButton removeEntry = new JButton("Remove");
     private TrainingRecord myAthletes = new TrainingRecord();
 
     private JTextArea outputArea = new JTextArea(5, 50);
@@ -119,6 +119,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         
         add(addR);
         addR.addActionListener(this);
+        add(removeEntry);
+        removeEntry.addActionListener(this);
         add(lookUpByDate);
         lookUpByDate.addActionListener(this);
         add(FindAllByDate);
@@ -153,6 +155,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         {
         	message = lookUpName();
         }
+        if(event.getSource() == removeEntry)
+        {
+        	message = removeEntry();
+        }
         if(event.getSource() == submitEntry)
         {
             if(dropDown.getSelectedItem().toString().equals("Sprint"))
@@ -181,11 +187,11 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             }
             if(dropDown.getSelectedItem().toString().equals("Swim"))
             {
-	           	 labrep.setVisible(true);
-	             rep.setVisible(true);
+	           	 labrep.setVisible(false);
+	             rep.setVisible(false);
 	             
-	             labrec.setVisible(true);
-	             rec.setVisible(true);
+	             labrec.setVisible(false);
+	             rec.setVisible(false);
 	             
 	             labplace.setVisible(true);
 	             place.setVisible(true);
@@ -257,7 +263,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 	        if(mm < 0 || mm > 60) return "Enter valid minutes";
 	        int s = Integer.parseInt(secs.getText());
 	        if(s < 0 || s > 60) return "Enter valid seconds";
-	        if(myAthletes.lookupExact(n, d, m, y) == false)
+	        if(myAthletes.lookupExact(n, d, mm, y) == null)
 	        {	
 	        	if(dropDown.getSelectedItem().toString().equals("NormalRun"))
 	        	{
@@ -302,33 +308,67 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     }
     
     public String lookupEntry() {
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        outputArea.setText("looking up record ...");
-     	String message = myAthletes.lookupEntry(d, m, y);
-        return message;
+    	try
+    	{
+	    	int m = Integer.parseInt(month.getText());
+	        int d = Integer.parseInt(day.getText());
+	        int y = Integer.parseInt(year.getText());
+	        outputArea.setText("looking up record ...");
+	     	String message = myAthletes.lookupEntry(d, m, y);
+	        return message;
+    	}catch(Exception e)
+    	{
+    		return "Enter a valid input";
+    	}
     }
     
     public String lookupAll()
     {
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        outputArea.setText("looking up record ...");
-     	String message = myAthletes.lookupAll(d, m, y);
-        return message;
+    	try
+    	{
+	        int m = Integer.parseInt(month.getText());
+	        int d = Integer.parseInt(day.getText());
+	        int y = Integer.parseInt(year.getText());
+	        outputArea.setText("looking up record ...");
+	     	String message = myAthletes.lookupAll(d, m, y);
+	        return message;
+    	}catch(Exception e)
+    	{
+    		return "Enter a valid input";
+    	}
     }
     
     public String lookUpName()
     {
-        String n = name.getText();
-        outputArea.setText("looking up records ...");
-     	String message = myAthletes.lookUpName(n);
-        return message;
+    	try
+    	{
+    		String n = name.getText();
+	        outputArea.setText("looking up records ...");
+	     	String message = myAthletes.lookUpName(n);
+	        return message;
+    	}catch(Exception e)
+    	{
+    		return "Enter a valid input";
+    	}
     }
 
-
+    public String removeEntry()
+    {
+    	try
+    	{
+	    	String n = name.getText();
+	        int m = Integer.parseInt(month.getText());
+	        int d = Integer.parseInt(day.getText());
+	        int y = Integer.parseInt(year.getText());
+	        outputArea.setText("looking up record ...");
+	     	String message = myAthletes.removeEntry(n, d, m, y);
+	        return message;
+    	}catch(Exception e)
+    	{
+    		return "Enter a valid input";
+    	}
+    }
+    
     public void blankDisplay() {
         name.setText("");
         day.setText("");

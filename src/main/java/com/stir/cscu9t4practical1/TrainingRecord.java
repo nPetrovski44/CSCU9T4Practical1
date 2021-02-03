@@ -50,16 +50,16 @@ public class TrainingRecord {
        return result;
    }
    
-   public boolean lookupExact(String name, int d, int m, int y)
+   public Entry lookupExact(String name, int d, int m, int y)
    {
 	   ListIterator<Entry> iter = tr.listIterator();
 	   while(iter.hasNext())
 	   {
 		   Entry current = iter.next();
 		   if(current.getName().equals(name) && current.getDay() == d && current.getMonth() == m && current.getYear() == y)
-			   return true;
+			   return current;
 	   }
-	   return false;
+	   return null;
    }
    
    public String lookUpName(String name)
@@ -81,6 +81,17 @@ public class TrainingRecord {
 		   }
 	   }
 	   return result;
+   }
+   
+   public String removeEntry(String name, int d, int m, int y)
+   {
+	   if(lookupExact(name, d, m, y) != null)
+	   {
+		   tr.remove(lookupExact(name, d, m, y));
+		   return "Entry was succesfully removed";
+	   }
+	   return "There isn't such an Entry in the record";
+		   
    }
    // Count the number of entries
    public int getNumberOfEntries(){
