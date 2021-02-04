@@ -42,7 +42,6 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JButton lookUpByDate = new JButton("Look Up Last");
     private JButton FindAllByDate = new JButton("Look Up All (Date)");
     private JButton	FindAllByName = new JButton("Look Up All (Name)");
-    private JButton submitEntry = new JButton("Refresh");
     private JButton removeEntry = new JButton("Remove");
     private TrainingRecord myAthletes = new TrainingRecord();
 
@@ -63,8 +62,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         name.setEditable(true);
         add(labdrop);
         add(dropDown);
-        add(submitEntry);
-        submitEntry.addActionListener(this);
+        dropDown.addActionListener(this);
         add(labd);
         add(day);
         day.setEditable(true);
@@ -131,6 +129,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         outputArea.setEditable(false);
         setSize(720, 200);
         setVisible(true);
+        removeEntry.setEnabled(false);
+        lookUpByDate.setEnabled(false);
+        FindAllByDate.setEnabled(false);
+        FindAllByName.setEnabled(false);
         blankDisplay();
 
         // To save typing in new entries while testing, uncomment
@@ -143,6 +145,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         String message = "";
         if (event.getSource() == addR) {
             message = addEntry("generic");
+            removeEntry.setEnabled(true);
+            lookUpByDate.setEnabled(true);
+            FindAllByDate.setEnabled(true);
+            FindAllByName.setEnabled(true);
         }
         if (event.getSource() == lookUpByDate) {
             message = lookupEntry();
@@ -158,8 +164,16 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         if(event.getSource() == removeEntry)
         {
         	message = removeEntry();
+        	if(myAthletes.getNumberOfEntries() == 0)
+            {
+                removeEntry.setEnabled(false);
+                lookUpByDate.setEnabled(false);
+                FindAllByDate.setEnabled(false);
+                FindAllByName.setEnabled(false);
+            }
         }
-        if(event.getSource() == submitEntry)
+
+        if(event.getSource() == dropDown)
         {
             if(dropDown.getSelectedItem().toString().equals("Sprint"))
             {
