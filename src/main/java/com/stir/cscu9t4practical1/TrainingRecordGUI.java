@@ -145,10 +145,13 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         String message = "";
         if (event.getSource() == addR) {
             message = addEntry("generic");
-            removeEntry.setEnabled(true);
-            lookUpByDate.setEnabled(true);
-            FindAllByDate.setEnabled(true);
-            FindAllByName.setEnabled(true);
+            if(myAthletes.getNumberOfEntries() != 0)
+            {
+            	removeEntry.setEnabled(true);
+            	lookUpByDate.setEnabled(true);
+            	FindAllByDate.setEnabled(true);
+            	FindAllByName.setEnabled(true);
+            }
         }
         if (event.getSource() == lookUpByDate) {
             message = lookupEntry();
